@@ -13,12 +13,12 @@ export default function Home() {
           Monitor traffic patterns, detect threats, and protect your infrastructure in real time.
         </p>
         <div className="flex gap-4 justify-center">
-          <button className="bg-orange-500 hover:bg-orange-600 text-white font-semibold px-6 py-3 rounded-lg transition">
+          <a href="/dashboard" className="bg-orange-500 hover:bg-orange-600 text-white font-semibold px-6 py-3 rounded-lg transition">
             Get Started
-          </button>
-          <button className="border border-gray-700 hover:border-orange-500 text-gray-300 font-semibold px-6 py-3 rounded-lg transition">
+          </a>
+          <a href="/dashboard" className="border border-gray-700 hover:border-orange-500 text-gray-300 font-semibold px-6 py-3 rounded-lg transition">
             View Dashboard
-          </button>
+          </a>
         </div>
       </div>
     </div>
