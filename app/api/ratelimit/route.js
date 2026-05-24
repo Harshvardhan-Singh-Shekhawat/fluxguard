@@ -1,7 +1,5 @@
 export const dynamic = 'force-dynamic'
-import { PrismaClient } from '@prisma/client'
-
-const prisma = new PrismaClient()
+import { prisma } from '../../lib/prisma'
 
 // In-memory store for request counts
 // Key: IP address, Value: { count, windowStart }
