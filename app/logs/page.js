@@ -1,20 +1,74 @@
-async function getLogs() {
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'
-  const logs = await fetch(`${baseUrl}/api/logs`, { cache: 'no-store' }).then(r => r.json())
-  return logs
-}
+'use client'
 
-export default async function Logs() {
-  const logs = await getLogs()
+import { useState, useEffect } from 'react'
+
+export default function Logs() {
+  const [logs, setLogs] = useState([])
+  const [filtered, setFiltered] = useState([])
+  const [statusFilter, setStatusFilter] = useState('All Statuses')
+  const [keyFilter, setKeyFilter] = useState('All Keys')
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    fetch('/api/logs')
+      .then(r => r.json())
+      .then(data => {
+        setLogs(data)
+        setFiltered(data)
+        setLoading(false)
+      })
+  }, [])
+
+  useEffect(() => {
+    let result = logs
+    if (statusFilter !== 'All Statuses') {
+      result = result.filter(l => l.status === statusFilter)
+    }
+    if (keyFilter !== 'All Keys') {
+      result = result.filter(l => l.apiKey?.name === keyFilter)
+    }
+    setFiltered(result)
+  }, [statusFilter, keyFilter, logs])
+
+  const uniqueKeys = [...new Set(logs.map(l => l.apiKey?.name).filter(Boolean))]
+
+  if (loading) return (
+    <div className="min-h-screen bg-gray-950 flex items-center justify-center">
+      <p className="text-gray-400">Loading...</p>
+    </div>
+  )
+
   return (
     <div className="min-h-screen bg-gray-950 px-6 py-10">
       <div className="max-w-6xl mx-auto">
+
         <div className="flex items-center justify-between mb-8">
           <div>
             <h1 className="text-3xl font-bold">Request Logs</h1>
-            <p className="text-gray-400 mt-1">Full traffic log across all API keys — {logs.length} total requests</p>
+            <p className="text-gray-400 mt-1">Full traffic log across all API keys — {filtered.length} total requests</p>
+          </div>
+          <div className="flex gap-2">
+            <select
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)}
+              className="bg-gray-900 border border-gray-700 text-gray-300 text-sm px-3 py-2 rounded-lg">
+              <option>All Statuses</option>
+              <option>Allowed</option>
+              <option>Blocked</option>
+              <option>Anomaly</option>
+            </select>
+            <select
+              value={keyFilter}
+              onChange={(e) => setKeyFilter(e.target.value)}
+              className="bg-gray-900 border border-gray-700 text-gray-300 text-sm px-3 py-2 rounded-lg">
+              <option>All Keys</option>
+              {uniqueKeys.map(k => (
+                <option key={k}>{k}</option>
+              ))}
+            </select>
           </div>
         </div>
+
         <div className="bg-gray-900 border border-gray-800 rounded-xl overflow-hidden">
           <table className="w-full text-sm">
             <thead>
@@ -29,7 +83,7 @@ export default async function Logs() {
               </tr>
             </thead>
             <tbody>
-              {logs.map((log) => (
+              {filtered.map((log) => (
                 <tr key={log.id} className="border-b border-gray-800 hover:bg-gray-800 transition">
                   <td className="px-6 py-4 text-gray-500 font-mono text-xs">req_{String(log.id).padStart(3, '0')}</td>
                   <td className="px-6 py-4 text-gray-300 font-mono">{log.ip}</td>
@@ -53,6 +107,7 @@ export default async function Logs() {
             </tbody>
           </table>
         </div>
+
       </div>
     </div>
   )

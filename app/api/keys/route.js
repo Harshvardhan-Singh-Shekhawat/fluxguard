@@ -4,7 +4,8 @@ const prisma = new PrismaClient()
 
 export async function GET() {
   const keys = await prisma.apiKey.findMany({
-    orderBy: { createdAt: 'desc' }
+    orderBy: { createdAt: 'desc' },
+    include: { logs: true }
   })
   return Response.json(keys)
 }
