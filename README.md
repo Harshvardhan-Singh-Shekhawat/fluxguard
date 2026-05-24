@@ -1,36 +1,133 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# FluxGuard 🛡️
 
-## Getting Started
+**Intelligent Rate Limiting & Anomaly Detection Platform**
 
-First, run the development server:
+A production-grade, Cloudflare-inspired API security dashboard built with Next.js, PostgreSQL, and ML-based threat detection.
+
+🔗 **Live Demo:** https://fluxguard-murex.vercel.app
+
+---
+
+## 🚀 Features
+
+- **Smart Rate Limiting** — Token-bucket algorithm that tracks requests per IP, auto-blocks threats, and returns HTTP 429 on limit breach
+- **ML Anomaly Detection** — Z-score statistical analysis identifies suspicious IPs and unusual traffic patterns automatically
+- **Real-time Dashboard** — Live charts showing request volume over time and status breakdown (Allowed/Blocked/Anomaly)
+- **API Key Management** — Create, copy, and revoke API keys with usage tracking and progress bars
+- **Request Logs** — Full traffic log with filterable status and API key columns
+- **Authentication** — Secure Sign Up / Sign In with NextAuth.js and bcrypt password hashing
+- **Protected Routes** — Middleware-based route protection redirects unauthenticated users
+
+---
+
+## 🏗️ Tech Stack
+
+| Layer | Technology |
+|-------|-----------|
+| Frontend | Next.js 14, React, Tailwind CSS |
+| Backend | Next.js API Routes, Node.js |
+| Database | PostgreSQL (Railway) |
+| ORM | Prisma |
+| Auth | NextAuth.js + bcryptjs |
+| Charts | Recharts |
+| Deployment | Vercel (frontend) + Railway (database) |
+
+---
+
+## 🧠 Technical Highlights
+
+### Token-Bucket Rate Limiter
+Implemented a sliding-window rate limiter using an in-memory Map data structure. Each IP gets a time-bounded request quota — exceeding it returns HTTP 429. Directly maps to OS process scheduling concepts from coursework.
+
+### Z-Score Anomaly Detection
+Statistical ML model that calculates mean and standard deviation of request patterns. IPs with Z-score > 2 are flagged as anomalies and automatically logged to the database — no manual rules needed.
+
+### Cloudflare-Inspired Architecture
+- API gateway middleware pattern
+- Per-IP rate limiting (mirrors Cloudflare Rate Limiting product)
+- Anomaly auto-detection (mirrors Cloudflare Bot Management)
+- Request log analytics (mirrors Cloudflare Analytics dashboard)
+
+---
+
+## 🗄️ Database Schema
+User          — Authentication (id, name, email, password)
+ApiKey        — API key management (id, name, key, tier, limit, isActive)
+RequestLog    — Traffic logs (id, ip, endpoint, method, status, latency, apiKeyId)
+Anomaly       — Detected threats (id, type, ip, severity, status, description)
+
+---
+
+## 🚦 API Endpoints
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | /api/keys | List all API keys |
+| POST | /api/keys | Create new API key |
+| DELETE | /api/keys/[id] | Revoke an API key |
+| GET | /api/logs | Get request logs |
+| POST | /api/logs | Log a new request |
+| GET | /api/anomalies | Get detected anomalies |
+| POST | /api/ratelimit | Check rate limit for an IP |
+| GET | /api/detect | Run ML anomaly detection |
+
+---
+
+## 🛠️ Running Locally
 
 ```bash
+# Clone the repository
+git clone https://github.com/Harshvardhan-Singh-Shekhawat/fluxguard.git
+cd fluxguard
+
+# Install dependencies
+npm install
+
+# Set up environment variables
+# Create .env file with:
+# DATABASE_URL="your-postgresql-url"
+# NEXTAUTH_SECRET="your-secret"
+# NEXTAUTH_URL="http://localhost:3000"
+
+# Push database schema
+npx prisma db push
+
+# Seed the database
+npx prisma db seed
+
+# Run development server
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+## 📸 Screenshots
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Landing Page
+![Landing Page](https://fluxguard-murex.vercel.app)
 
-## Learn More
+### Dashboard
+Real-time traffic analytics with live charts and request logs.
 
-To learn more about Next.js, take a look at the following resources:
+### API Keys
+Create, monitor, and revoke API keys with usage progress bars.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Anomalies
+AI-detected threats with severity classification and auto-blocking.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+---
 
-## Deploy on Vercel
+## 👨‍💻 Built By
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+**Harshvardhan Singh Shekhawat**
+B.Tech Computer Science | Internship @ Cloudflare-stack Networking Company
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+
+## 📚 Academic Concepts Applied
+
+- **DSA** — Token bucket using Map data structure, O(1) IP lookup
+- **OS** — Rate limiting as process scheduling, bounded request queues
+- **ML** — Z-score statistical anomaly detection
+- **DBMS** — Relational schema design, foreign keys, indexed queries
+- **Networks** — API gateway pattern, HTTP status codes, request lifecycle
