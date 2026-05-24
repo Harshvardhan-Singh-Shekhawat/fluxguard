@@ -1,10 +1,7 @@
 import { RequestsLineChart, StatusBarChart } from '../components/Charts'
 
 async function getStats() {
-  const baseUrl = process.env.VERCEL_URL 
-    ? `https://${process.env.VERCEL_URL}` 
-    : 'http://localhost:3000'
-    
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'
   const [logs, keys, anomalies] = await Promise.all([
     fetch(`${baseUrl}/api/logs`, { cache: 'no-store' }).then(r => r.json()),
     fetch(`${baseUrl}/api/keys`, { cache: 'no-store' }).then(r => r.json()),
@@ -15,25 +12,21 @@ async function getStats() {
 
 export default async function Dashboard() {
   const { logs, keys, anomalies } = await getStats()
-
   const totalRequests = logs.length
   const blockedRequests = logs.filter(l => l.status === 'Blocked').length
   const anomalyCount = anomalies.length
   const activeKeys = keys.filter(k => k.isActive).length
-
   const stats = [
     { label: "Total Requests", value: totalRequests.toLocaleString(), change: "Live from DB", color: "text-blue-400" },
     { label: "Blocked Requests", value: blockedRequests.toLocaleString(), change: "Live from DB", color: "text-red-400" },
     { label: "Anomalies Detected", value: anomalyCount.toString(), change: "Live from DB", color: "text-orange-400" },
     { label: "Active API Keys", value: activeKeys.toString(), change: "Live from DB", color: "text-green-400" },
   ]
-
   const statusData = [
     { status: 'Allowed', count: logs.filter(l => l.status === 'Allowed').length },
     { status: 'Blocked', count: logs.filter(l => l.status === 'Blocked').length },
     { status: 'Anomaly', count: logs.filter(l => l.status === 'Anomaly').length },
   ]
-
   const hourCounts = {}
   logs.forEach(log => {
     const hour = new Date(log.createdAt).getHours()
@@ -47,12 +40,10 @@ export default async function Dashboard() {
   return (
     <div className="min-h-screen bg-gray-950 px-6 py-10">
       <div className="max-w-6xl mx-auto">
-
         <div className="mb-8">
           <h1 className="text-3xl font-bold">Dashboard</h1>
           <p className="text-gray-400 mt-1">Real-time traffic overview for your APIs</p>
         </div>
-
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
           {stats.map((stat) => (
             <div key={stat.label} className="bg-gray-900 border border-gray-800 rounded-xl p-6">
@@ -62,7 +53,6 @@ export default async function Dashboard() {
             </div>
           ))}
         </div>
-
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-10">
           <div className="bg-gray-900 border border-gray-800 rounded-xl p-6">
             <h2 className="text-lg font-semibold mb-6">Requests Over Time</h2>
@@ -73,7 +63,6 @@ export default async function Dashboard() {
             <StatusBarChart data={statusData} />
           </div>
         </div>
-
         <div className="bg-gray-900 border border-gray-800 rounded-xl p-6">
           <h2 className="text-lg font-semibold mb-4">Recent Request Logs</h2>
           <table className="w-full text-sm">
@@ -95,9 +84,7 @@ export default async function Dashboard() {
                       log.status === "Blocked" ? "bg-red-900 text-red-400" :
                       log.status === "Anomaly" ? "bg-orange-900 text-orange-400" :
                       "bg-green-900 text-green-400"
-                    }`}>
-                      {log.status}
-                    </span>
+                    }`}>{log.status}</span>
                   </td>
                   <td className="py-3 text-gray-400">{log.latency}ms</td>
                 </tr>
@@ -105,7 +92,6 @@ export default async function Dashboard() {
             </tbody>
           </table>
         </div>
-
       </div>
     </div>
   )

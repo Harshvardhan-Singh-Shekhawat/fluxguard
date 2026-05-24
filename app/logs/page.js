@@ -1,25 +1,20 @@
 async function getLogs() {
-  const baseUrl = process.env.VERCEL_URL 
-    ? `https://${process.env.VERCEL_URL}` 
-    : 'http://localhost:3000'
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'
   const logs = await fetch(`${baseUrl}/api/logs`, { cache: 'no-store' }).then(r => r.json())
   return logs
 }
 
 export default async function Logs() {
   const logs = await getLogs()
-
   return (
     <div className="min-h-screen bg-gray-950 px-6 py-10">
       <div className="max-w-6xl mx-auto">
-
         <div className="flex items-center justify-between mb-8">
           <div>
             <h1 className="text-3xl font-bold">Request Logs</h1>
             <p className="text-gray-400 mt-1">Full traffic log across all API keys — {logs.length} total requests</p>
           </div>
         </div>
-
         <div className="bg-gray-900 border border-gray-800 rounded-xl overflow-hidden">
           <table className="w-full text-sm">
             <thead>
@@ -58,7 +53,6 @@ export default async function Logs() {
             </tbody>
           </table>
         </div>
-
       </div>
     </div>
   )
