@@ -1,0 +1,43 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model ApiKey {
+  id        Int      @id @default(autoincrement())
+  name      String
+  key       String   @unique
+  tier      String   @default("free")
+  limit     Int      @default(10000)
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  logs      RequestLog[]
+}
+
+model RequestLog {
+  id         Int      @id @default(autoincrement())
+  ip         String
+  endpoint   String
+  method     String
+  status     String
+  latency    Int
+  apiKeyId   Int
+  apiKey     ApiKey   @relation(fields: [apiKeyId], references: [id])
+  createdAt  DateTime @default(now())
+}
+
+model Anomaly {
+  id          Int      @id @default(autoincrement())
+  type        String
+  ip          String
+  endpoint    String
+  requests    String
+  severity    String
+  status      String
+  description String
+  createdAt   DateTime @default(now())
+}
