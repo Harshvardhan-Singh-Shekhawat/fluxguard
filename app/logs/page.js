@@ -1,5 +1,8 @@
 async function getLogs() {
-  const logs = await fetch('http://localhost:3000/api/logs', { cache: 'no-store' }).then(r => r.json())
+  const baseUrl = process.env.VERCEL_URL 
+    ? `https://${process.env.VERCEL_URL}` 
+    : 'http://localhost:3000'
+  const logs = await fetch(`${baseUrl}/api/logs`, { cache: 'no-store' }).then(r => r.json())
   return logs
 }
 

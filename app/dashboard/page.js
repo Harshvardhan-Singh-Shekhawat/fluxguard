@@ -1,10 +1,14 @@
 import { RequestsLineChart, StatusBarChart } from '../components/Charts'
 
 async function getStats() {
+  const baseUrl = process.env.VERCEL_URL 
+    ? `https://${process.env.VERCEL_URL}` 
+    : 'http://localhost:3000'
+    
   const [logs, keys, anomalies] = await Promise.all([
-    fetch('http://localhost:3000/api/logs', { cache: 'no-store' }).then(r => r.json()),
-    fetch('http://localhost:3000/api/keys', { cache: 'no-store' }).then(r => r.json()),
-    fetch('http://localhost:3000/api/anomalies', { cache: 'no-store' }).then(r => r.json()),
+    fetch(`${baseUrl}/api/logs`, { cache: 'no-store' }).then(r => r.json()),
+    fetch(`${baseUrl}/api/keys`, { cache: 'no-store' }).then(r => r.json()),
+    fetch(`${baseUrl}/api/anomalies`, { cache: 'no-store' }).then(r => r.json()),
   ])
   return { logs, keys, anomalies }
 }
@@ -24,14 +28,12 @@ export default async function Dashboard() {
     { label: "Active API Keys", value: activeKeys.toString(), change: "Live from DB", color: "text-green-400" },
   ]
 
-  // Prepare chart data
   const statusData = [
     { status: 'Allowed', count: logs.filter(l => l.status === 'Allowed').length },
     { status: 'Blocked', count: logs.filter(l => l.status === 'Blocked').length },
     { status: 'Anomaly', count: logs.filter(l => l.status === 'Anomaly').length },
   ]
 
-  // Group logs by hour for line chart
   const hourCounts = {}
   logs.forEach(log => {
     const hour = new Date(log.createdAt).getHours()

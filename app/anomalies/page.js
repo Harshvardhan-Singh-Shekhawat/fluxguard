@@ -1,5 +1,8 @@
 async function getAnomalies() {
-  const anomalies = await fetch('http://localhost:3000/api/anomalies', { cache: 'no-store' }).then(r => r.json())
+  const baseUrl = process.env.VERCEL_URL 
+    ? `https://${process.env.VERCEL_URL}` 
+    : 'http://localhost:3000'
+  const anomalies = await fetch(`${baseUrl}/api/anomalies`, { cache: 'no-store' }).then(r => r.json())
   return anomalies
 }
 
