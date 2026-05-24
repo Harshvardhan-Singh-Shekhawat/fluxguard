@@ -1,7 +1,7 @@
-import { Geist } from "next/font/google";
+import { Inter } from "next/font/google";
 import "./globals.css";
 
-const geist = Geist({ subsets: ["latin"] });
+const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
   title: "FluxGuard",
@@ -11,7 +11,7 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className={`${geist.className} bg-gray-950 text-white`}>
+      <body className={`${inter.className} bg-gray-950 text-white`}>
         <nav className="border-b border-gray-800 px-6 py-4 flex items-center justify-between">
           <div className="text-xl font-bold">
             Flux<span className="text-orange-500">Guard</span>
