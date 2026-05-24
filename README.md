@@ -104,16 +104,19 @@ npm run dev
 ## 📸 Screenshots
 
 ### Landing Page
-![Landing Page](https://fluxguard-murex.vercel.app)
+![Landing Page](screenshots/landing.png)
 
 ### Dashboard
-Real-time traffic analytics with live charts and request logs.
+![Dashboard](screenshots/dashboard.png)
+
+### Logs
+![Logs](screenshots/logs.png)
 
 ### API Keys
-Create, monitor, and revoke API keys with usage progress bars.
+![API Keys](screenshots/keys.png)
 
 ### Anomalies
-AI-detected threats with severity classification and auto-blocking.
+![Anomalies](screenshots/anomalies.png)
 
 ---
 
