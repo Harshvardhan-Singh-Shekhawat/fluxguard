@@ -1,5 +1,6 @@
 export const dynamic = 'force-dynamic'
-import { prisma } from '../../../lib/prisma'
+import { PrismaClient } from '@prisma/client'
+const prisma = new PrismaClient()
 
 // Z-score calculation
 function calculateZScore(value, mean, stdDev) {
