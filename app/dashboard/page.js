@@ -1,4 +1,5 @@
 import { RequestsLineChart, StatusBarChart } from '../components/Charts'
+import SimulateButton from '../components/SimulateButton'
 
 async function getStats() {
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'
@@ -40,9 +41,12 @@ export default async function Dashboard() {
   return (
     <div className="min-h-screen bg-gray-950 px-6 py-10">
       <div className="max-w-6xl mx-auto">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold">Dashboard</h1>
-          <p className="text-gray-400 mt-1">Real-time traffic overview for your APIs</p>
+        <div className="flex items-center justify-between mb-8">
+          <div>
+            <h1 className="text-3xl font-bold">Dashboard</h1>
+            <p className="text-gray-400 mt-1">Real-time traffic overview for your APIs</p>
+          </div>
+          <SimulateButton />
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
           {stats.map((stat) => (
